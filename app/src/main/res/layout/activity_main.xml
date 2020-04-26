@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+
+    <Button
+        android:id="@+id/first_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showFacebookNativeBanner"
+        android:text="Show Native Banner"/>
+
+    <Button
+        android:id="@+id/second_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showInterstitial"
+        android:text="Show Interstitial"/>
+
+
+    <Button
+        android:id="@+id/show_google_interstitial_ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load Intertitial Ad"
+        android:onClick="loadInterstitialAds"/>
+
+    <Button
+        android:id="@+id/show_facebook_interstitial_ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Facebook Native"
+        android:onClick="showGoogleNative"/>
+
+
+    <LinearLayout
+        android:id="@+id/google_native_ad_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_pic_btn_linear_layout"
+        android:layout_marginTop="100sp"
+        android:orientation="vertical"
+
+        tools:ignore="UnknownId">
+
+        <FrameLayout
+            android:id="@+id/fl_adplaceholder"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="250sp"
+            android:layout_marginTop="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fb_native_ad_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_pic_btn_linear_layout"
+        android:layout_marginTop="100sp"
+        android:orientation="vertical"
+
+        tools:ignore="UnknownId">
+
+        <com.facebook.ads.NativeAdLayout
+            android:id="@+id/fb_native_ad_container"
+            android:layout_width="match_parent"
+            android:layout_height="250sp"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+    <com.facebook.ads.NativeAdLayout
+        android:id="@+id/native_banner_ad_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical">
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/google_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible"
+            app:adSize="SMART_BANNER"
+            app:adUnitId="@string/google_banner" />
+
+        <LinearLayout
+            android:id="@+id/fb_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

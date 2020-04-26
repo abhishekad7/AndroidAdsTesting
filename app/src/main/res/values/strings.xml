@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">AdsTesting</string>
+
+
+    <string name="google_app_id">ca-app-pub-4244486275367493~6368791251</string>
+
+
+    <string name="google_banner">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="google_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="google_native_ad">ca-app-pub-3940256099942544/1044960115</string>
+
+    <string name="fb_banner">820546655119185_820553708451813</string>
+    <string name="fb_interstitial">820546655119185_820554111785106</string>
+    <string name="fb_native_banner">820546655119185_820553325118518</string>
+    <string name="fb_native_ad">820546655119185_820551108452073</string>
+
+
+</resources>

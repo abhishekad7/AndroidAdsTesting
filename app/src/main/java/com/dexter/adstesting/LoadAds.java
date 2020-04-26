@@ -17,6 +17,9 @@ public class LoadAds {
     FacebookAds facebookAds;
     GoogleAds googleAds;
 
+    boolean showBothInterstitialAd = false;
+    boolean interstitialShown = false;
+
 
     public LoadAds(Context context, String googleAppId){
         this.mContext = context;
@@ -70,30 +73,62 @@ public class LoadAds {
     public void loadInterstitialAds(String googleInterstitialId, boolean googleShowOnLoad, String facebookInterstitialId, boolean facebookShowOnLoad, boolean showBothAds){
         googleAds.loadGoogleInterstitialAd(googleInterstitialId, googleShowOnLoad, showBothAds, facebookAds);
         facebookAds.loadFacebookInterstitialAd(facebookInterstitialId, facebookShowOnLoad, showBothAds, googleAds);
+
+        showBothInterstitialAd = showBothAds;
     }
 
     public boolean showInterstitialAds(int firstTry){
-        if(firstTry == FACEBOOK_FIRST) {
-            if (!facebookAds.showFacbookInterstialAd()) {
-                if(googleAds.showGoogleInterstialAd()){
+
+        if(showBothInterstitialAd) {
+
+            if (firstTry == FACEBOOK_FIRST) {
+                if (!facebookAds.showFacbookInterstialAd()) {
+                    if (googleAds.showGoogleInterstialAd()) {
+                        return true;
+                    }
+                    return false;
+
+                } else {
                     return true;
                 }
-                return false;
-
             } else {
-                return true;
-            }
-        } else {
-            if (!googleAds.showGoogleInterstialAd()) {
-                if(facebookAds.showFacbookInterstialAd()){
+                if (!googleAds.showGoogleInterstialAd()) {
+                    if (facebookAds.showFacbookInterstialAd()) {
+                        return true;
+                    }
+                    return false;
+
+                } else {
                     return true;
                 }
-                return false;
-
-            } else {
-                return true;
             }
+        } else if(!interstitialShown) {
+            interstitialShown = true;
+            if (firstTry == FACEBOOK_FIRST) {
+                if (!facebookAds.showFacbookInterstialAd()) {
+                    if (googleAds.showGoogleInterstialAd()) {
+                        return true;
+                    }
+                    return false;
+
+                } else {
+                    return true;
+                }
+            } else {
+                if (!googleAds.showGoogleInterstialAd()) {
+                    if (facebookAds.showFacbookInterstialAd()) {
+                        return true;
+                    }
+                    return false;
+
+                } else {
+                    return true;
+                }
+            }
+
         }
+
+        return false;
 
     }
 

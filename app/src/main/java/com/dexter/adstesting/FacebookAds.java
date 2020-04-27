@@ -39,18 +39,33 @@ public class FacebookAds {
     Context mContext;
 
     InterstitialAd facebookInterstitialAd;
-    
     private NativeAd facebookNativeAd;
     private NativeBannerAd facebookNativeBannerAd;
+
+    boolean canRequestBannerAd = true, canRequestNativeBannerAd = true;
+    boolean canRequestNativeAd = true;
+    boolean canRequestInterstitialAd = true;
 
 
     public FacebookAds(Context context, String googleAppId){
         AudienceNetworkAds.initialize(context);
         this.mContext = context;
         this.googleAppId = googleAppId;
+
+        canRequestBannerAd = true;
+        canRequestNativeBannerAd = true;
+        canRequestNativeAd = true;
+        canRequestInterstitialAd = true;
+
     }
 
     public void loadFacebookBannerAd(final View adViewContainer, final String facebookBannerId, final AdSize adSize, final int onError, final View googleAdView){
+
+        if(!canRequestBannerAd){
+            return;
+        }
+
+        canRequestBannerAd = false;
 
         AdView bannerFbAdView = new com.facebook.ads.AdView(mContext, facebookBannerId, adSize);
 
@@ -61,6 +76,9 @@ public class FacebookAds {
         bannerFbAdView.setAdListener(new com.facebook.ads.AdListener() {
             @Override
             public void onError(Ad ad, AdError adError) {
+
+                canRequestBannerAd = true;
+
                 if(adContainer != null) {
                     adContainer.setVisibility(View.GONE);
                 }
@@ -94,7 +112,7 @@ public class FacebookAds {
 
             @Override
             public void onLoggingImpression(Ad ad) {
-
+                canRequestBannerAd = true;
             }
         });
 
@@ -102,6 +120,13 @@ public class FacebookAds {
     }
 
     public void loadFacebookBannerAd(View adViewContainer, String facebookBannerId, AdSize adSize){
+
+        if(!canRequestBannerAd){
+            return;
+        }
+
+        canRequestBannerAd = false;
+
 
         AdView bannerFbAdView = new com.facebook.ads.AdView(mContext, facebookBannerId, adSize);
 
@@ -112,6 +137,8 @@ public class FacebookAds {
         bannerFbAdView.setAdListener(new com.facebook.ads.AdListener() {
             @Override
             public void onError(Ad ad, AdError adError) {
+
+                canRequestBannerAd = true;
 
                 if(adContainer != null) {
                     adContainer.setVisibility(View.GONE);
@@ -134,7 +161,7 @@ public class FacebookAds {
 
             @Override
             public void onLoggingImpression(Ad ad) {
-
+                canRequestBannerAd = true;
             }
         });
 
@@ -143,6 +170,13 @@ public class FacebookAds {
 
 
     public void loadFacebookNativeBannerAd(final View nativeBannerAdLayout, String facebookNativeBannerAdId) {
+
+        if(!canRequestNativeBannerAd){
+            return;
+        }
+
+        canRequestNativeBannerAd = false;
+
         facebookNativeBannerAd = new NativeBannerAd(mContext, facebookNativeBannerAdId);
 
         facebookNativeBannerAd.setAdListener(new NativeAdListener() {
@@ -154,7 +188,7 @@ public class FacebookAds {
             @Override
             public void onError(Ad ad, AdError adError) {
 
-                Log.e(TAG, adError.getErrorMessage());
+                canRequestNativeBannerAd = true;
 
             }
 
@@ -177,7 +211,7 @@ public class FacebookAds {
 
             @Override
             public void onLoggingImpression(Ad ad) {
-
+                canRequestNativeBannerAd = true;
             }
         });
         facebookNativeBannerAd.loadAd();
@@ -186,6 +220,13 @@ public class FacebookAds {
     }
 
     public void loadFacebookNativeBannerAd(final View nativeBannerAdLayout, final String facebookNativeBannerAdId, final int onError, final View googleAdView ) {
+
+        if(!canRequestNativeBannerAd){
+            return;
+        }
+
+        canRequestNativeBannerAd = false;
+
         facebookNativeBannerAd = new NativeBannerAd(mContext, facebookNativeBannerAdId);
 
         facebookNativeBannerAd.setAdListener(new NativeAdListener() {
@@ -197,7 +238,7 @@ public class FacebookAds {
             @Override
             public void onError(Ad ad, AdError adError) {
 
-                Log.e(TAG, adError.getErrorMessage());
+                canRequestNativeBannerAd = true;
 
                 if(nativeBannerAdLayout != null){
                     nativeBannerAdLayout.setVisibility(View.GONE);
@@ -217,7 +258,7 @@ public class FacebookAds {
             @Override
             public void onAdLoaded(Ad ad) {
 
-                Log.i(TAG, "facebook native banner loaded");
+
 
                 if (facebookNativeBannerAd == null || facebookNativeBannerAd != ad) {
                     return;
@@ -242,7 +283,7 @@ public class FacebookAds {
 
             @Override
             public void onLoggingImpression(Ad ad) {
-                Log.i(TAG, "facebook native banner impression");
+                canRequestNativeBannerAd = true;
             }
         });
         facebookNativeBannerAd.loadAd();
@@ -312,9 +353,14 @@ public class FacebookAds {
 
 
     public void loadFacebookInterstitialAd(String facebookInterstitialId, boolean showOnLoad, final boolean showGoogleAdAlso, final GoogleAds googleAds){
+
+        if(!canRequestInterstitialAd){
+            return;
+        }
+
+        canRequestInterstitialAd = false;
+
         facebookInterstitialAd = new InterstitialAd(mContext, facebookInterstitialId);
-
-
         facebookInterstitialAd.setAdListener(new InterstitialAdListener() {
             @Override
             public void onInterstitialDisplayed(Ad ad) {
@@ -323,6 +369,9 @@ public class FacebookAds {
 
             @Override
             public void onInterstitialDismissed(Ad ad) {
+
+                canRequestInterstitialAd = true;
+
                 if(showGoogleAdAlso && googleAds != null){
                     googleAds.showGoogleInterstialAd();
                 }
@@ -330,7 +379,7 @@ public class FacebookAds {
 
             @Override
             public void onError(Ad ad, AdError adError) {
-
+                canRequestInterstitialAd = true;
 
             }
 
@@ -348,7 +397,7 @@ public class FacebookAds {
             @Override
             public void onLoggingImpression(Ad ad) {
 
-
+                canRequestInterstitialAd = true;
             }
         });
 
@@ -357,6 +406,13 @@ public class FacebookAds {
 
 
     public void loadFacebookNativeAd(final View facebookNativeAdLayout, final String facebookNativeAdId, final int onError, final View googleNativeAdPlaceholder, final String googleNativeAdId) {
+
+
+        if(!canRequestNativeAd){
+            return;
+        }
+
+        canRequestNativeAd = false;
 
         facebookNativeAd = new NativeAd(mContext, facebookNativeAdId);
 
@@ -368,6 +424,9 @@ public class FacebookAds {
 
             @Override
             public void onError(Ad ad, AdError adError) {
+
+                canRequestNativeAd = true;
+
 
                 if(facebookNativeAdLayout != null) {
                     facebookNativeAdLayout.setVisibility(View.GONE);
@@ -407,6 +466,9 @@ public class FacebookAds {
             @Override
             public void onLoggingImpression(Ad ad) {
                 // Native ad impression
+
+                canRequestNativeAd = true;
+
             }
         });
 
@@ -416,6 +478,12 @@ public class FacebookAds {
 
 
     public void loadFacebookNativeAd(final View facebookNativeAdLayout, String facebookNativeAdId) {
+
+        if(!canRequestNativeAd){
+            return;
+        }
+
+        canRequestNativeAd = false;
 
         facebookNativeAd = new NativeAd(mContext, facebookNativeAdId);
 
@@ -427,6 +495,9 @@ public class FacebookAds {
 
             @Override
             public void onError(Ad ad, AdError adError) {
+
+                canRequestNativeAd = true;
+
                 if(facebookNativeAdLayout != null) {
                     facebookNativeAdLayout.setVisibility(View.GONE);
                 }
@@ -453,7 +524,7 @@ public class FacebookAds {
 
             @Override
             public void onLoggingImpression(Ad ad) {
-
+                canRequestNativeAd = true;
             }
         });
 

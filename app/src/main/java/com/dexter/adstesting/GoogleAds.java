@@ -40,6 +40,11 @@ public class GoogleAds {
     InterstitialAd googleInterstitialAd;
     private UnifiedNativeAd googleNativeAd;
 
+    boolean canRequestBannerAd = true;
+    boolean canRequestNativeAd = true;
+    boolean canRequestInterstitialAd = true;
+
+
     public GoogleAds(Context context, String appId){
 
         MobileAds.initialize(context, new OnInitializationCompleteListener() {
@@ -50,11 +55,21 @@ public class GoogleAds {
 
         this.appId = appId;
         this.mContext = context;
+
+        canRequestBannerAd = true;
+        canRequestNativeAd = true;
+        canRequestInterstitialAd = true;
     }
 
 
 
     public void loadGoogleBannerAd(final View adView, final int onError, final View facebookAdViewContainer, final String facebookBannerId, final AdSize adSize){
+
+        if(!canRequestBannerAd){
+            return;
+        }
+
+        canRequestBannerAd = false;
 
         final AdView bannerGoogleAdView = (AdView) adView;
         bannerGoogleAdView.setAdListener(new AdListener() {
@@ -71,6 +86,9 @@ public class GoogleAds {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
+
+                canRequestBannerAd = true;
+
                 if(bannerGoogleAdView != null) {
                     bannerGoogleAdView.setVisibility(View.GONE);
                 }
@@ -86,6 +104,14 @@ public class GoogleAds {
             @Override
             public void onAdOpened() {
 
+                //canRequestBannerAd = true;
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+
+                canRequestBannerAd = true;
             }
 
             @Override
@@ -95,12 +121,12 @@ public class GoogleAds {
 
             @Override
             public void onAdLeftApplication() {
-
+                canRequestBannerAd = true;
             }
 
             @Override
             public void onAdClosed() {
-
+                canRequestBannerAd = true;
             }
         });
 
@@ -111,6 +137,14 @@ public class GoogleAds {
     }
 
     public void loadGoogleBannerAd(final View adView){
+
+
+        if(!canRequestBannerAd){
+            return;
+        }
+
+        canRequestBannerAd = false;
+
 
         final AdView bannerGoogleAdView = (AdView) adView;
         bannerGoogleAdView.setAdListener(new AdListener() {
@@ -123,6 +157,8 @@ public class GoogleAds {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
+                canRequestBannerAd = true;
+
                 if(bannerGoogleAdView != null) {
                     bannerGoogleAdView.setVisibility(View.GONE);
                 }
@@ -131,7 +167,14 @@ public class GoogleAds {
 
             @Override
             public void onAdOpened() {
+                //canRequestBannerAd = true;
+            }
 
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+
+                canRequestBannerAd = true;
             }
 
             @Override
@@ -141,12 +184,12 @@ public class GoogleAds {
 
             @Override
             public void onAdLeftApplication() {
-
+                canRequestBannerAd = true;
             }
 
             @Override
             public void onAdClosed() {
-
+                canRequestBannerAd = true;
             }
         });
 
@@ -176,6 +219,11 @@ public class GoogleAds {
 
     public void loadGoogleInterstitialAd(final String googleInterstitialId, final boolean showOnLoad, final boolean showFacebookAdAlso, final FacebookAds facebookAds){
 
+        if(!canRequestInterstitialAd){
+            return;
+        }
+
+        canRequestInterstitialAd = false;
 
         googleInterstitialAd = new com.google.android.gms.ads.InterstitialAd(mContext);
         googleInterstitialAd.setAdUnitId(googleInterstitialId);
@@ -192,13 +240,19 @@ public class GoogleAds {
             }
 
             @Override
-            public void onAdFailedToLoad(int errorCode) {
+            public void onAdImpression() {
+                super.onAdImpression();
+                canRequestInterstitialAd = true;
+            }
 
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                canRequestInterstitialAd = true;
             }
 
             @Override
             public void onAdOpened() {
-
+                //canRequestInterstitialAd = true;
             }
 
             @Override
@@ -208,11 +262,14 @@ public class GoogleAds {
 
             @Override
             public void onAdLeftApplication() {
-
+                canRequestInterstitialAd = true;
             }
 
             @Override
             public void onAdClosed() {
+
+                canRequestInterstitialAd = true;
+
                 if(showFacebookAdAlso && facebookAds != null){
                     facebookAds.showFacbookInterstialAd();
                 }
@@ -228,12 +285,22 @@ public class GoogleAds {
 
     public void loadGoogleNativeAd(final View googleNativeAdPlaceholder, final String googleNativeAdId) {
 
+        if(!canRequestNativeAd){
+            return;
+        }
+
+        Log.i(TAG, "loading google native ad");
+
+        canRequestNativeAd = false;
+
         AdLoader.Builder builder = new AdLoader.Builder(mContext, googleNativeAdId);
 
         builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
             @Override
             public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
 
+
+                Log.i(TAG, "loaded google native ad");
 
                 if(googleNativeAdPlaceholder != null) {
                     googleNativeAdPlaceholder.setVisibility(View.VISIBLE);
@@ -251,6 +318,7 @@ public class GoogleAds {
                 }
             }
 
+
         });
 
         VideoOptions videoOptions = new VideoOptions.Builder()
@@ -266,11 +334,32 @@ public class GoogleAds {
         AdLoader adLoader = builder.withAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(int errorCode) {
+
+                canRequestNativeAd = true;
+                Log.i(TAG, "failed google native ad");
+
                 if(googleNativeAdPlaceholder != null){
                     googleNativeAdPlaceholder.setVisibility(View.GONE);
                 }
 
             }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+                Log.i(TAG, "impression google native ad");
+                canRequestNativeAd = true;
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+
+                canRequestNativeAd = true;
+
+            }
+
+
         }).build();
 
         adLoader.loadAd(new AdRequest.Builder().build());
@@ -282,12 +371,22 @@ public class GoogleAds {
     public void loadGoogleNativeAd(final View googleNativeAdPlaceholder, final String googleNativeAdId, final int onError, final View facebookNativeAdLayout, final String facebookNativeAdId) {
 
 
+        if(!canRequestNativeAd){
+            return;
+        }
+
+        Log.i(TAG, "loading google native ad");
+
+        canRequestNativeAd = false;
+
+
         AdLoader.Builder builder = new AdLoader.Builder(mContext, googleNativeAdId);
 
         builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
             @Override
             public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
 
+                Log.i(TAG, "loaded google native ad");
 
                 if(facebookNativeAdLayout != null){
                     facebookNativeAdLayout.setVisibility(View.GONE);
@@ -324,6 +423,11 @@ public class GoogleAds {
         AdLoader adLoader = builder.withAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(int errorCode) {
+
+                canRequestNativeAd = true;
+
+                Log.i(TAG, "failed google native ad");
+
                 if(googleNativeAdPlaceholder != null){
                     googleNativeAdPlaceholder.setVisibility(View.GONE);
                 }
@@ -337,6 +441,22 @@ public class GoogleAds {
                 }
 
             }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+
+                canRequestNativeAd = true;
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+
+                Log.i(TAG, "impression google native ad");
+                canRequestNativeAd = true;
+            }
+
         }).build();
 
         adLoader.loadAd(new AdRequest.Builder().build());

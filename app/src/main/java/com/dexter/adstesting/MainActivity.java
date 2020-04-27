@@ -48,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void loadInterstitialAds(View view){
-        loadAds.loadInterstitialAds(getString(R.string.google_interstitial), false, getString(R.string.fb_interstitial), false, true);
+
+        loadAds.loadBannerAds(findViewById(R.id.google_banner), findViewById(R.id.fb_banner), getString(R.string.fb_banner), AdSize.BANNER_HEIGHT_90, GOOGLE_FIRST, NO_AD);
+
     }
 
     public void showFacebookNativeBanner(View view){
@@ -57,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void showInterstitial(View v){
-        loadAds.showInterstitialAds(GOOGLE_FIRST);
+        loadAds.loadBannerAds(findViewById(R.id.google_banner), findViewById(R.id.fb_banner), getString(R.string.fb_banner), AdSize.BANNER_HEIGHT_90, FACEBOOK_FIRST, NO_AD);
     }
 
     public void showGoogleNative(View v){
-        loadAds.loadNativeAds(findViewById(R.id.fl_adplaceholder), findViewById(R.id.fb_native_ad_container), getString(R.string.google_native_ad), getString(R.string.fb_native_ad), FACEBOOK_FIRST, NO_AD);
+        loadAds.loadNativeAds(findViewById(R.id.fl_adplaceholder), findViewById(R.id.fb_native_ad_container), getString(R.string.google_native_ad), getString(R.string.fb_native_ad), GOOGLE_FIRST, NO_AD);
 
     }
 
